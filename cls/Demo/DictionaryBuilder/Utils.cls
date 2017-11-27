@@ -1,13 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<Class name="Demo.DictionaryBuilder.Utils">
-<TimeCreated>63922,56966.250697</TimeCreated>
+Class Demo.DictionaryBuilder.Utils
+{
 
-<Method name="CreateRestWebApp">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[&pWebAppName=""]]></FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod CreateRestWebApp(ByRef pWebAppName = "") As %Status
+{
 	set tSC = $$$OK, tCreated=0, tCurrentNS = $$$LOWER($namespace)
 	try {
 		set:pWebAppName="" pWebAppName = "/csp/"_tCurrentNS_"/dbREST/"
@@ -37,7 +32,7 @@
 	}
 	
 	quit $$$OK
-]]></Implementation>
-</Method>
-</Class>
-</Export>
+}
+
+}
+
