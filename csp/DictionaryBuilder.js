@@ -1,6 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<CSP name="DictionaryBuilder.js" application="/csp/dictionarybuilder/" default="1"><![CDATA[
 hostURL = function(domain) {
 	 if (!domain) { domain = ':domain'; }
 	return location.href.split('/').slice(0,-1).join('/')+'/dbREST/Domain/'+domain+'/';
@@ -322,5 +319,4 @@ dictApp.directive('iscDroppable', function() {
 			);
         }
     }
-});]]></CSP>
-</Export>
+});

@@ -1,33 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25">
-<Class name="Demo.DictionaryBuilder.RestHandler">
-<IncludeCode>%IKPublic</IncludeCode>
-<IncludeGenerator>%IKPublic</IncludeGenerator>
-<Super>%CSP.REST</Super>
-<TimeCreated>63922,56421.535301</TimeCreated>
+Include %IKPublic
 
-<Parameter name="CONTENTTYPE">
-<Default>application/json</Default>
-</Parameter>
+IncludeGenerator %IKPublic
 
-<Parameter name="IKPAGESIZE">
-<Type>INTEGER</Type>
-<Default>200</Default>
-</Parameter>
+Class Demo.DictionaryBuilder.RestHandler Extends %CSP.REST
+{
 
-<Parameter name="IKPFILTERMODE">
-<Type>INTEGER</Type>
-<Expression>$$$FILTERALLANDSORT</Expression>
-</Parameter>
+Parameter CONTENTTYPE = "application/json";
 
-<Parameter name="JSONFORMATPARAMS">
-<Type>STRING</Type>
-<Default>aelotwu</Default>
-</Parameter>
+Parameter IKPAGESIZE As INTEGER = 200;
 
-<XData name="UrlMap">
-<XMLNamespace>http://www.intersystems.com/urlmap</XMLNamespace>
-<Data><![CDATA[
+Parameter IKPFILTERMODE As INTEGER = {$$$FILTERALLANDSORT};
+
+Parameter JSONFORMATPARAMS As STRING = "aelotwu";
+
+XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
+{
 <Routes>
 <Route Url="/Domain/:domain/Sentences/Entity/:entity" Method="GET" Call="GetSentencesByEntity"/>
 
@@ -38,14 +25,10 @@
 <Route Url="/Domain/:domain/Dictionaries" Method="GET" Call="GetDictionaries"/>
 <Route Url="/Domain/:domain/Dictionaries" Method="POST" Call="UpdateDictionaries"/>
 </Routes>
-]]></Data>
-</XData>
+}
 
-<Method name="GetDictionaries">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod GetDictionaries(pDomainId As %Integer) As %Status
+{
 	set tSC = $$$OK
 	try {
 		set tJSON = ##class(%ZEN.proxyObject).%New()
@@ -98,14 +81,10 @@
 		set tSC = ex.AsStatus()
 	}
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetBlacklists">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod GetBlacklists(pDomainId As %Integer) As %Status
+{
 	set tSC = $$$OK
 	try {
 		set tJSON = ##class(%ZEN.proxyObject).%New()
@@ -141,14 +120,10 @@
 		set tSC = ex.AsStatus()
 	}
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="UpdateDictionaries">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+ClassMethod UpdateDictionaries(pDomainId As %Integer) As %Status
+{
 	set tSC = $$$OK
 	try {
 		set tJSONString = ""
@@ -328,16 +303,11 @@
 		set tSC = ex.AsStatus()
 	}
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetSentencesByEntity">
-<Description><![CDATA[
-Retrieves all sentences (including full text) in the domain containing <var>pEntity</var> and prints them as JSON]]></Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer,pEntity:%String</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+/// Retrieves all sentences (including full text) in the domain containing <var>pEntity</var> and prints them as JSON
+ClassMethod GetSentencesByEntity(pDomainId As %Integer, pEntity As %String) As %Status
+{
 	set tSC = $$$OK
 	try {
 		set:$data(%response) %response.ContentType="application/json"
@@ -372,17 +342,11 @@ Retrieves all sentences (including full text) in the domain containing <var>pEnt
         set tSC=ex.AsStatus()
     }
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetSourcesInternal">
-<Description>
-Utility method to print a list of sources to JSON</Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[pDomainId:%Integer,pFilter:%iKnow.Filters.Filter="",pFilterByEntity:%String="",&pHighlight,pGetMetadata:%Boolean=1]]></FormalSpec>
-<Private>1</Private>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+/// Utility method to print a list of sources to JSON
+ClassMethod GetSourcesInternal(pDomainId As %Integer, pFilter As %iKnow.Filters.Filter = "", pFilterByEntity As %String = "", ByRef pHighlight, pGetMetadata As %Boolean = 1) As %Status [ Private ]
+{
 	set tSC = $$$OK
 	try {
 		set:$data(%response) %response.ContentType="application/json"
@@ -426,18 +390,13 @@ Utility method to print a list of sources to JSON</Description>
 		set tSC = ex.AsStatus()
 	}
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetHighlightedSource">
-<Description><![CDATA[
-Retrieves a highlighted summary of the text in source <var>pSourceId</var>, optionally filtered to the
-sentences containing <var>pFilterByEntity</var>. At most <var>pMaxSentences</var> will be returned.
-Any markup in <var>pHighlight</var> is appended with default highlighting of negations]]></Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[pDomainId:%Integer,pSourceId:%Integer,pFilterByEntity:%String="",pMaxSentences:%Integer=5,&pHighlight,*pSC:%Status=$$$OK]]></FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+/// Retrieves a highlighted summary of the text in source <var>pSourceId</var>, optionally filtered to the
+/// sentences containing <var>pFilterByEntity</var>. At most <var>pMaxSentences</var> will be returned.
+/// Any markup in <var>pHighlight</var> is appended with default highlighting of negations
+ClassMethod GetHighlightedSource(pDomainId As %Integer, pSourceId As %Integer, pFilterByEntity As %String = "", pMaxSentences As %Integer = 5, ByRef pHighlight, Output pSC As %Status = {$$$OK}) As %String
+{
 	set pSC = $$$OK, tString = ""
 	try {
 		
@@ -494,14 +453,10 @@ Any markup in <var>pHighlight</var> is appended with default highlighting of neg
 		set pSC = ex.AsStatus()
 	}
 	quit tString
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetHighlightedSentence">
-<ClassMethod>1</ClassMethod>
-<FormalSpec><![CDATA[pDomainId:%Integer,pSentenceId:%Integer,&pHighlight,*pSC:%Status]]></FormalSpec>
-<ReturnType>%String</ReturnType>
-<Implementation><![CDATA[
+ClassMethod GetHighlightedSentence(pDomainId As %Integer, pSentenceId As %Integer, ByRef pHighlight, Output pSC As %Status) As %String
+{
 	set pSC = $$$OK, tSentence = ""
 	try {
 		// default highlighting
@@ -518,16 +473,11 @@ Any markup in <var>pHighlight</var> is appended with default highlighting of neg
 		set pSC = ex.AsStatus()
 	}
 	quit tSentence
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetEntities">
-<Description><![CDATA[
-Retrieves the top entities similar to <var>pString</var> and prints them to JSON]]></Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer</FormalSpec>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+/// Retrieves the top entities similar to <var>pString</var> and prints them to JSON
+ClassMethod GetEntities(pDomainId As %Integer) As %Status
+{
 	set tSC = $$$OK
 	try {
 		set tJSONString = ""
@@ -594,25 +544,16 @@ Retrieves the top entities similar to <var>pString</var> and prints them to JSON
 		set tSC = ex.AsStatus()
 	}
 	quit ..ErrorHandler(tSC)
-]]></Implementation>
-</Method>
+}
 
-<Method name="GetFilter">
-<ClassMethod>1</ClassMethod>
-<FormalSpec>pDomainId:%Integer,pFilterSpec:%String=""</FormalSpec>
-<ReturnType>%iKnow.Filters.Filter</ReturnType>
-<Implementation><![CDATA[	quit ""
-]]></Implementation>
-</Method>
+ClassMethod GetFilter(pDomainId As %Integer, pFilterSpec As %String = "") As %iKnow.Filters.Filter
+{
+	quit ""
+}
 
-<Method name="ErrorHandler">
-<Description><![CDATA[
-Simple error handler, converting a <class>%Status</class> object to a JSON representation.]]></Description>
-<ClassMethod>1</ClassMethod>
-<FormalSpec>Stat:%Status</FormalSpec>
-<Private>1</Private>
-<ReturnType>%Status</ReturnType>
-<Implementation><![CDATA[
+/// Simple error handler, converting a <class>%Status</class> object to a JSON representation.
+ClassMethod ErrorHandler(Stat As %Status) As %Status [ Private ]
+{
 	if $$$ISERR(Stat) {
 		set errorcode=$piece(##class(%SYSTEM.Status).GetErrorCodes(Stat),",")
 		set errormessage=##class(%SYSTEM.Status).GetOneStatusText(Stat)
@@ -624,7 +565,7 @@ Simple error handler, converting a <class>%Status</class> object to a JSON repre
 		set errobj=""
 	}
 	quit $$$OK
-]]></Implementation>
-</Method>
-</Class>
-</Export>
+}
+
+}
+
